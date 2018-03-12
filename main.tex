@@ -53,14 +53,14 @@
 
 % START START START START START START START START START START START START START
 
-\begin{frame}{``Analysis system'' as an optimization point}
+\begin{frame}{``Analysis system'' as access optimization}
 \vspace{0.25 cm}
-\begin{block}{Assumptions about access:}
+\begin{block}{Often true about end-user data analysis:}
 \begin{itemize}\setlength{\itemsep}{0.35 cm}
 \item Only need a small fraction of the event and particle attributes, like a few dozen.
 
 \vspace{0.1 cm}
-\textcolor{gray}{(A handful of trigger booleans, details on two or three particle types, maybe a veto on one or two more, but nowhere close to the thousands of attributes that exist.)}
+\textcolor{gray}{(A handful of trigger flags, details on two or three particle types, maybe a veto on another's kinematics, but nowhere close to the thousands of available attributes.)}
 
 \item Need to look at all events, if only to reject them on the basis of a few attributes.
 
@@ -68,9 +68,9 @@
 \end{itemize}
 \end{block}
 
-\begin{uncoverenv}<2->\begin{block}{Many analyses fit these conditions, but today's pipelines were designed for a different optimization point: reconstruction.}
+\begin{uncoverenv}<2->\begin{block}{Today's pipelines were designed for a different optimization point: reconstruction.}
 \vspace{0.25 cm}
-\uncover<3>{Consider this request: ``Please submit a GRID job to plot the muon kinematics. Then we'll think about what we want to look at next.'' Is that unreasonable?}
+\uncover<3>{Consider this request: ``Please submit a GRID job to plot the muon spectrum. Then we'll think about what we want to look at next.'' Is that unreasonable?}
 \end{block}
 \end{uncoverenv}
 \end{frame}
