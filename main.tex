@@ -53,9 +53,57 @@
 
 % START START START START START START START START START START START START START
 
-\begin{frame}{First slide}
-\vspace{0.5 cm}
-HERE
+\begin{frame}{``Analysis system'' as an optimization point}
+\vspace{0.25 cm}
+\begin{block}{Assumptions about access:}
+\begin{itemize}\setlength{\itemsep}{0.35 cm}
+\item Only need a small fraction of the event and particle attributes, like a few dozen.
+
+\vspace{0.1 cm}
+\textcolor{gray}{(A handful of trigger booleans, details on two or three particle types, maybe a veto on one or two more, but nowhere close to the thousands of attributes that exist.)}
+
+\item Need to look at all events, if only to reject them on the basis of a few attributes.
+
+\item Frequent, repeated process; code to run not known in advance; exploratory.
+\end{itemize}
+\end{block}
+
+\begin{uncoverenv}<2->\begin{block}{Many analyses fit these conditions, but today's pipelines were designed for a different optimization point: reconstruction.}
+\vspace{0.25 cm}
+\uncover<3>{Consider this request: ``Please submit a GRID job to plot the muon kinematics. Then we'll think about what we want to look at next.'' Is that unreasonable?}
+\end{block}
+\end{uncoverenv}
 \end{frame}
+
+\begin{frame}{An example of what I have in mind: Google BigQuery}
+\vspace{0.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
+\includegraphics[width=\linewidth]{bigquery.png}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Basic block diagram}
+\vspace{0.25 cm}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{basic-block-diagram.pdf}
+\end{center}
+
+If the output is not small enough to download quickly, it wouldn't matter how fast the processing is and this system ceases to be ``exploratory.''
+
+\vspace{0.25 cm}
+It relies on users adopting the mindset of big data living on a server and only extracting small objects (e.g.\ histograms, highly skimmed tables).
+\end{frame}
+
+\begin{frame}{So we can just use BigQuery, then?}
+\vspace{0.25 cm}
+{\huge No!!!}
+
+
+
+
+\end{frame}
+
+
 
 \end{document}
