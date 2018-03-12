@@ -86,22 +86,36 @@
 \begin{frame}{Basic block diagram}
 \vspace{0.25 cm}
 \begin{center}
-\includegraphics[width=0.7\linewidth]{basic-block-diagram.pdf}
+\only<1-2>{\includegraphics[width=0.7\linewidth]{basic-block-diagram.pdf}}
+\only<3>{\includegraphics[width=0.7\linewidth]{google-block-diagram.pdf}}
 \end{center}
 
-If the output is not small enough to download quickly, it wouldn't matter how fast the processing is and this system ceases to be ``exploratory.''
+\begin{uncoverenv}<2->
+The ``new sources'' can be arbitrarily large and efficiently share overlapping data with the original sources because they live in the same system.
 
 \vspace{0.25 cm}
-It relies on users adopting the mindset of big data living on a server and only extracting small objects (e.g.\ histograms, highly skimmed tables).
+The ``reduced output'' must be small enough to download quickly (e.g.\ histograms or highly skimmed tables). If not, the system ceases to be ``exploratory.''
+\end{uncoverenv}
 \end{frame}
 
 \begin{frame}{So we can just use BigQuery, then?}
 \vspace{0.25 cm}
-{\huge No!!!}
+\mbox{ } \hfill \textcolor{red}{\Huge No!!!} \hfill \mbox{ }
 
+\vspace{0.1 cm}
+\begin{itemize}\setlength{\itemsep}{0.2 cm}
+\item<2-> \textcolor{darkblue}{Reason \#1: SQL.} Simple HEP problems translate into complex SQL and moderate-to-complex HEP problems would be unreasonably difficult to express.
 
+\vspace{0.15 cm}
+Non-SQL languages in this problem space, such as SparkSQL's column expressions or Apache Drill's internal query language, are just as restrictive in the ways that matter.
 
+\item<3-> \textcolor{darkblue}{Reason \#2: Data model.} The BigQuery paper (``Dremel''), Parquet \& Drill (open source versions of the same), Apache Arrow, and SparkSQL all describe rich, nested data models sufficient to describe HEP events.
 
+\vspace{0.15 cm}
+However, {\it for every one of these,} you quickly encounter ``not implemented yet'' messages when you try to use them for HEP events.
+
+\item<4-> \textcolor{darkblue}{Reason \#3: User interface.} The web form is fun, but we need queries embedded in an interactive, programmable environment with plotting and statistics libraries: ROOT or Python or both (probably both).
+\end{itemize}
 \end{frame}
 
 
