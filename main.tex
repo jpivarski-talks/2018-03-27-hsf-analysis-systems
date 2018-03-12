@@ -118,6 +118,52 @@ However, {\it for every one of these,} you quickly encounter ``not implemented y
 \end{itemize}
 \end{frame}
 
+\begin{frame}{HEP data are both simpler and more complex than others}
+\vspace{0.35 cm}
+\mbox{ } \hfill \textcolor{red}{\LARGE Simpler:} \hfill \mbox{ }
+
+\vspace{0.25 cm}
+\begin{columns}
+\column{0.5\linewidth}
+
+HEP functions never have to cross events.
+
+\vspace{0.25 cm}
+\mbox{ } \hfill \includegraphics[width=0.8\linewidth]{event-variable-correlation-hep.pdf} \hfill \mbox{ }
+
+\column{0.5\linewidth}
+
+\mbox{\hspace{-0.5 cm}Common elsewhere: e.g.\ market basket analysis.\hspace{-0.5 cm}}
+
+\vspace{0.25 cm}
+\mbox{ } \hfill \includegraphics[width=0.8\linewidth]{event-variable-correlation-marketbasket-2.pdf} \hfill \mbox{ }
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{HEP data are both simpler and more complex than others}
+\vspace{0.35 cm}
+\mbox{ } \hfill \textcolor{red}{\LARGE More complex:} \hfill \mbox{ }
+
+\vspace{-0.25 cm}
+\begin{columns}[t]
+\column{0.5\linewidth}
+
+HEP data are variable-length, nested data structures, and we typically need to loop over combinations of particles.
+
+\vspace{0.25 cm}
+\mbox{ } \hfill \includegraphics[width=0.8\linewidth]{event-structure.pdf} \hfill \hfill \mbox{ }
+
+\column{0.5\linewidth}
+
+In most fields, data are not considered ready for analysis until they're in a tabular form. (Earlier steps are called ``tidying.'')
+
+\vspace{0.25 cm}
+\mbox{ } \hfill \includegraphics[width=0.8\linewidth]{table-structure.pdf} \hfill \hfill \mbox{ }
+
+\end{columns}
+\end{frame}
+
 
 
 \end{document}
