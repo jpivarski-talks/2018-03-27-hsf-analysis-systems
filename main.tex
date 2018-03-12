@@ -225,20 +225,34 @@ FIXME: example of OAMap and performance plot
 \textcolor{darkblue}{Simplest case:} histograms, but that would get restrictive as analyses develop.
 
 \vspace{0.25 cm}
-\textcolor{darkblue}{Here's an idea:} Pandas DataFrames.
-\begin{itemize}
-\item Until recently, I've had the wrong idea of what Pandas is: an event collection with egregious limitations.
+\uncover<2->{\textcolor{darkblue}{Here's an idea:} Pandas DataFrames.}
+
+\vspace{0.5 cm}
+\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\item<3-> Until recently, I've wrongly thought that a Pandas DataFrame is like a TTree with egregious limitations:
 \begin{itemize}
 \item Tabular, with little support for variable-length, nested data.
-\item Strictly in-memory. (Dask DataFrames implement the interface \mbox{without this restriction.)\hspace{-1 cm}}
+\item Strictly in-memory. \textcolor{gray}{(Dask DataFrames implement the interface \mbox{without this restriction.)\hspace{-1 cm}}}
 \end{itemize}
-\item I had been missing an important fact: most of Pandas's functionality is in its handling of {\it indexes}. (Event collections are unindexed.)
+\item<4-> I had been missing an important fact: most of Pandas's functionality is in its handling of {\it indexes}.
+\begin{itemize}
+\item TTrees/events are indexed only by entry or run/event number.
+\item Pandas indexes may be non-contiguous, non-numeric, intervals/durations, multi-component, \ldots, and every operation first matches by index.
+\end{itemize}
+\item<5-> Pandas has more in common with {\it histograms} than with {\it event sources.}
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Just an example\ldots}
 \vspace{0.25 cm}
 \mbox{ } \hfill \includegraphics[width=0.78\linewidth]{pandas-book.png} \hfill \mbox{ }
+\end{frame}
+
+\begin{frame}{}
+
+
+
+
 \end{frame}
 
 
