@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="block-diagram-source.svg">
+   sodipodi:docname="block-diagram-output.svg">
   <defs
      id="defs4">
     <marker
@@ -68,9 +68,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="253.46854"
-     inkscape:cy="97.363485"
+     inkscape:zoom="1.979899"
+     inkscape:cx="435.76046"
+     inkscape:cy="126.02765"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -166,7 +166,7 @@
          x="181.2234"
          y="366.2923"
          style="line-height:100%;fill:#ff0000"
-         id="tspan3259">function</tspan></text>
+         id="tspan3263">function</tspan></text>
     <text
        sodipodi:linespacing="100%"
        id="text3001"
@@ -186,16 +186,16 @@
        x="181.45192"
        style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
        xml:space="preserve"><tspan
-         style="line-height:100%"
-         id="tspan3013"
+         style="line-height:100%;fill:#ff0000"
          y="426.54767"
          x="181.45192"
-         sodipodi:role="line">reduced</tspan><tspan
-         style="line-height:100%"
+         sodipodi:role="line"
+         id="tspan3027">Pandas</tspan><tspan
+         style="line-height:100%;fill:#ff0000"
          y="444.54767"
          x="181.45192"
          sodipodi:role="line"
-         id="tspan3027">output</tspan></text>
+         id="tspan3045">DataFrame</tspan></text>
     <text
        sodipodi:linespacing="100%"
        id="text3015"
