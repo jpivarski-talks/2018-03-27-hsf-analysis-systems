@@ -213,8 +213,8 @@ variable-length, nested data & \textcolor{red}{HEP analysis} & graph analysis \\
 FIXME: example of OAMap and performance plot
 \end{frame}
 
-\begin{frame}{}
-\vspace{1 cm}
+\begin{frame}{Current thinking\ldots}
+\vspace{0.5 cm}
 \begin{center}
 \only<1>{\includegraphics[width=0.7\linewidth]{basic-block-diagram.pdf}}
 \only<2>{\includegraphics[width=0.7\linewidth]{block-diagram-source.pdf}}
@@ -271,12 +271,69 @@ Imagine a table of {\it count} and {\it sumw2} indexed by {\it mass bin}, {\it P
 This encapsulates what we would ordinarily do with five histograms in one data structure, and it keeps indexes straight when combining different Monte Carlo samples.
 \end{frame}
 
-\begin{frame}{}
-\vspace{1 cm}
+\begin{frame}{Current thinking\ldots}
+\vspace{0.5 cm}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{block-diagram-output.pdf}
 \end{center}
 \end{frame}
+
+\begin{frame}{What should our processing be?}
+\vspace{0.5 cm}
+\underline{Speedy, prompt start-up parallel processing is not something HEP needs to invent.}
+
+\vspace{0.25 cm}
+\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\item<2-> \textcolor{darkblue}{Spark} is the elephant in the room (used to be Hadoop), but it's hard to (efficiently) bridge our C++/Python ecosystem with the JVM.
+
+\item<3-> I considered \textcolor{darkblue}{Drill}, but it's also JVM.
+
+\item<4-> \textcolor{darkblue}{Impala} is C++, but seems to be too specialized to the SQL mindset.
+
+\item<5-> Thanat Jatuphattharachat (summer student) investigated raw \textcolor{darkblue}{Zookeeper} coordination, but this is getting close to DIY.
+
+\item<6-> \textcolor{darkblue}{Dask} looks like a good choice: it's in the C++/Python world, general enough to piece together what we need out of basic parts.
+
+\vspace{0.25 cm}
+(More about this in the concurrency session.)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Current thinking\ldots}
+\vspace{0.5 cm}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{block-diagram-processing.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}{What should our data storage be?}
+\vspace{0.5 cm}
+\underline{Again, no need for HEP to invent.}
+
+\vspace{0.25 cm}
+\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\item<2-> Using columns, rather than files, as the fundamental unit means keeping track of a much larger number of named entities.
+
+\item<3-> Object stores scale to larger namespaces than filesystems by providing fewer operations (listing, directory structure), which we don't need for this project.
+
+\item<4-> \textcolor{darkblue}{Ceph} is both an object store and a filesystem, and it minimizes metadata overhead by coordinating data placement through a static function, rather than a dynamic service.
+
+\begin{itemize}
+\item<5-> Lets us experiment both ways.
+
+\item<5-> We could use the static function to place executable tasks, improving data locality\ldots
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Current thinking\ldots}
+\vspace{0.5 cm}
+\begin{center}
+\includegraphics[width=0.7\linewidth]{block-diagram-ceph.pdf}
+\end{center}
+\end{frame}
+
+
 
 
 
