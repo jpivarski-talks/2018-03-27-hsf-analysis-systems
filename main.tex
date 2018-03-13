@@ -189,9 +189,9 @@ variable-length, nested data & \textcolor{red}{HEP analysis} & graph analysis \\
 \vspace{0.25 cm}
 \textcolor{darkblue}{But beyond ROOT:}
 \begin{itemize}
-\item<2-> Want to adopt an SQL optimization: ``no row materialization.'' User code written in terms of objects, but runtime is strictly array access (fast).
+\item<2-> Want to adopt an optimization common in SQL: ``no row materialization.'' \\ User code written in terms of objects, but runtime is strictly array access (fast).
 \item<3-> Want flexibility to define datasets with 99\% overlap: e.g.\ user defines new jet energy corrections for later use. New dataset is one new column + all old columns.
-\item<4-> Want to allow for database style indexing, so that a cut on an indexed variable (most likely $p_T$) avoids touching disk for failing events.
+\item<4-> Want to allow for database-style indexing, so that a cut on an indexed variable (most likely $p_T$) avoids touching disk for events that would fail the cut.
 \end{itemize}
 \end{uncoverenv}
 \end{frame}
@@ -202,10 +202,10 @@ variable-length, nested data & \textcolor{red}{HEP analysis} & graph analysis \\
 
 \vspace{0.25 cm}
 \begin{itemize}\setlength{\itemsep}{0.25 cm}
-\item[$\surd$]<2-> Translates object oriented (Python) code into nothing but array references.
+\item[$\surd$]<2-> Translates object oriented (Python) code into nothing but array operations.
 \item[$\surd$]<3-> Extends Numba (Python compiler) to generate native machine bytecode (fast).
-\item[$\surd$]<4-> Unrestricted source of arrays; may be ROOT, raw data files, remote network calls, HDF5, etc., or all of the above in the same object.
-\item[$\surd$]<5-> Enough indirection for different particle types to be independently sorted by their own $p_T$s, and thus a filter like ``muon $p_T > X$ and jet $p_T > Y$'' could read half the muon data and half the jet data.
+\item[$\surd$]<4-> Unrestricted source of arrays; may be ROOT, raw data files, remote network calls, HDF5, etc., or {\it all of the above in the same object.}
+\item[$\surd$]<5-> Enough indirection for different particle types to be independently sorted by their own $p_T$s, and thus a filter like ``muon $p_T > X$ and jet $p_T > Y$'' might touch disk for only half the muon data and half the jet data (PoC).
 \end{itemize}
 \end{frame}
 
@@ -238,9 +238,9 @@ FIXME: example of OAMap and performance plot
 \item<4-> I had been missing an important fact: most of Pandas's functionality is in its handling of {\it indexes}.
 \begin{itemize}
 \item TTrees/events are indexed only by entry or run/event number.
-\item Pandas indexes may be non-contiguous, non-numeric, intervals/durations, multi-component, \ldots, and every operation first matches by index.
+\item Pandas indexes may be non-contiguous, non-numeric, intervals/durations, multi-component, \ldots, and every operation maintains consistent indexes.
 \end{itemize}
-\item<5-> Pandas has more in common with {\it histograms} than with {\it event sources.}
+\item<5-> Pandas has more in common with {\it histograms} than it does with {\it event sources.}
 \end{itemize}
 \end{frame}
 
@@ -251,10 +251,11 @@ FIXME: example of OAMap and performance plot
 
 \begin{frame}[fragile]{Pandas generalizes what we do with histograms}
 \vspace{0.35 cm}
-Imagine a table of {\it count} and {\it sumw2} indexed by {\it mass bin}, {\it PDF$\pm$}, {\it JES$\pm$}, etc.
+Imagine a table of {\it count} and {\it sumw2} indexed by {\it mass bin}, {\it PDF$\pm$}, {\it JEC$\pm$}, etc.
 
 {\small\begin{verbatim}
-              mass bin   PDF   JES   count   sumw2
+              ------- index -------  count   sumw2
+              mass bin   PDF   JEC
               [0, 10)    0     0     123.4   0.12
                          +           123.5   0.12
                          -           123.3   0.11
