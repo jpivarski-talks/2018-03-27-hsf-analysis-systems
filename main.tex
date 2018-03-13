@@ -333,9 +333,25 @@ This encapsulates what we would ordinarily do with five histograms in one data s
 \end{center}
 \end{frame}
 
+\begin{frame}{Conclusions}
+\vspace{0.35 cm}
+Though an analysis service should use as many off-the-shelf parts as possible, some are not suitable and some essential functionality is nonexistent.
 
+\vspace{0.25 cm}
+\underline{Software products developed along the way:}
 
+\renewcommand{\arraystretch}{1.2}
 
-
+\vspace{0.25 cm}
+\begin{tabular}{c p{0.65\linewidth} c}
+\href{https://github.com/scikit-hep/uproot}{\textcolor{blue}{uproot}} & Quickly access ROOT branches as arrays. & mature \\
+\href{https://github.com/diana-hep/oamap}{\textcolor{blue}{oamap}} & Translate between object oriented Python and low-level array operations. & beta \\
+pandhist & Methods for plotting tables of intervals and counts as histograms (Vega for plotting). & conceptual \\
+vegaviewer & Browser-based TCanvas for Vega, so that you don't have to use Jupyter if you don't want to. & conceptual \\
+? & OAMap as a collection in Dask. & \\
+? & Column and dataset manager (for sharing data). & \\
+? & All-in-one environment for query-based analysis. & \\
+\end{tabular}
+\end{frame}
 
 \end{document}
