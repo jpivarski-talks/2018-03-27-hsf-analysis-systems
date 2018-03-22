@@ -250,26 +250,116 @@ FIXME: example of OAMap and performance plot
 \end{frame}
 
 \begin{frame}[fragile]{Pandas generalizes what we do with histograms}
-\vspace{0.35 cm}
-Imagine a table of {\it count} and {\it sumw2} indexed by {\it mass bin}, {\it PDF$\pm$}, {\it JEC$\pm$}, etc.
+\small
 
-{\small\begin{verbatim}
-              ------- index -------  count   sumw2
-              mass bin   PDF   JEC
-              [0, 10)    0     0     123.4   0.12
-                         +           123.5   0.12
-                         -           123.3   0.11
-                         0     +     124.4   0.15
-                               -     123.4   0.14
-              [10, 20)   0     0     23.4    0.22
-                         +           23.5    0.22
-                         -           23.3    0.21
-                         0     +     24.4    0.25
-                               -     23.4    0.24
-              [20, 30)...
-\end{verbatim}}
+\begin{minted}{python}
+# define bins in many dimensions; we'll think about how to plot later
+import pandhist
+muonhist = (pandhist
+            .bin(100, 0, 500, "mass")
+            .cut("q1*q2 < 0")
+            .irrbin([0.2, 0.5], "mt1")
+            .irrbin([0.2, 0.5], "mt2")
+            .fillable())      # creates a fillable Pandas DataFrame
+\end{minted}
 
-This encapsulates what we would ordinarily do with five histograms in one data structure, and it keeps indexes straight when combining different Monte Carlo samples.
+\begin{minted}{python}
+for muons, charge, mt2activity in uproot.iterate(
+  "RA2Analysis/*.root", "TreeMaker2/PreSelection",
+  ["Muons", "Muons_charge", "Muons_MT2Activity"], outputtype=tuple):
+    for i in range(len(muons)):
+        if len(charge[i]) == 2:
+            mu1, mu2 = muons[i]
+            q1,  q2  = charge[i]
+            mt1, mt2 = mt2activity[i]
+            # fill method has an argument for each variable
+            muonhist.fill((mu1 + mu2).mass, q1, q2, mt1, mt2)
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Pandas generalizes what we do with histograms}
+\scriptsize
+\begin{verbatim}
+>>> muonhist
+                                                  count   # in this example, count is
+mass           q1*q2 < 0 mt1         mt2                  # the only column; the rest
+[-inf, 0.0)    fail      [-inf, 0.2) [-inf, 0.2)    0.0   # is a hierarchical index
+                                     [0.2, 0.5)     0.0   # (mass, q1*q2 < 0, mt1, mt2)
+                                     [0.5, inf)     0.0
+                         [0.2, 0.5)  [-inf, 0.2)    0.0
+                                     [0.2, 0.5)     0.0   # if we asked for weights,
+                                     [0.5, inf)     0.0   # sumw and sumw2 would be
+                         [0.5, inf)  [-inf, 0.2)    0.0   # separate columns
+                                     [0.2, 0.5)     0.0
+                                     [0.5, inf)     0.0
+               pass      [-inf, 0.2) [-inf, 0.2)    0.0   # if we asked for a profile,
+                                     [0.2, 0.5)     0.0   # we'd get sum(y) and sum2(y)
+                                     [0.5, inf)     0.0
+                         [0.2, 0.5)  [-inf, 0.2)    0.0
+                                     [0.2, 0.5)     0.0   # but most of the work is done
+                                     [0.5, inf)     0.0   # by the hierarchical index
+                         [0.5, inf)  [-inf, 0.2)    0.0
+                                     [0.2, 0.5)     0.0
+                                     [0.5, inf)     0.0
+...                                                 ...
+[1836 rows x 1 columns]
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Pandas generalizes what we do with histograms}
+\small
+\begin{onlyenv}<1>
+\begin{minted}{python}
+>>> pandhist.steps("mass").data(muonhist)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{minted}{python}
+>>> pandhist.steps("mass").overlay("q1*q2 < 0").data(muonhist)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<3>
+\begin{minted}{python}
+>>> pandhist.area("mass").stack("q1*q2 < 0").data(muonhist)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<4>
+\begin{minted}{python}
+>>> pandhist.steps("mass").column("q1*q2 < 0").data(muonhist)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<5>
+\begin{minted}{python}
+>>> pandhist.steps("mass").row("mt1").column("mt2").data(muonhist)
+\end{minted}
+\end{onlyenv}
+\begin{onlyenv}<6>
+\scriptsize
+\begin{minted}{python}
+>>> pandhist.steps("mass").overlay("q1*q2 < 0").row("mt1").column("mt2").data(muonhist)
+\end{minted}
+\end{onlyenv}
+
+\begin{center}
+\begin{onlyenv}<1>
+\includegraphics[height=7 cm]{pandhist.pdf}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\includegraphics[height=7 cm]{pandhist_overlay.pdf}
+\end{onlyenv}
+\begin{onlyenv}<3>
+\includegraphics[height=7 cm]{pandhist_stack.pdf}
+\end{onlyenv}
+\begin{onlyenv}<4>
+\includegraphics[height=7 cm]{pandhist_trellis.pdf}
+\end{onlyenv}
+\begin{onlyenv}<5>
+\includegraphics[height=7 cm]{pandhist_double_trellis.pdf}
+\end{onlyenv}
+\begin{onlyenv}<6>
+\includegraphics[height=7 cm]{pandhist_double_trellis_overlay.pdf}
+\end{onlyenv}
+\end{center}
 \end{frame}
 
 \begin{frame}{Current thinking\ldots}
