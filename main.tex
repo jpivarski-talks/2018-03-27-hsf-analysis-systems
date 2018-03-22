@@ -201,7 +201,7 @@ variable-length, nested data & \textcolor{red}{\underline{HEP analysis}} & graph
 
 \vspace{0.25 cm}
 \begin{itemize}\setlength{\itemsep}{0.2 cm}
-\item[$\surd$]<2-> Translates object oriented (Python) code into nothing but array operations.
+\item[$\surd$]<2-> Translates object-oriented (Python) code into nothing but array operations.
 \item[$\surd$]<3-> Extends Numba (Python compiler) to generate native machine bytecode (fast).
 \item[$\surd$]<4-> Arrays can come from anywhere: ROOT (through uproot), raw data files, remote network calls, HDF5, etc. {\it The same object} can have attributes served from any of the above, so an official dataset can be served from ROOT files while a user's modification (cuts or partial calculations applied) can be these ROOT files augmented by raw arrays.
 
@@ -302,7 +302,7 @@ array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
 \textcolor{darkblue}{Simplest case:} histograms, but that would get restrictive as analyses develop.
 
 \vspace{0.25 cm}
-\uncover<2->{\textcolor{darkblue}{Here's an idea:} Pandas DataFrames.}
+\uncover<2->{\textcolor{darkblue}{Here's an idea:} query server returns Pandas DataFrames.}
 
 \vspace{0.5 cm}
 \begin{itemize}\setlength{\itemsep}{0.25 cm}
@@ -441,7 +441,8 @@ mass           q1*q2 < 0 mt1         mt2                  # the only column; the
 \begin{frame}{Current thinking\ldots}
 \vspace{0.5 cm}
 \begin{center}
-\includegraphics[width=0.7\linewidth]{block-diagram-output.pdf}
+\only<1>{\includegraphics[width=0.7\linewidth]{block-diagram-source.pdf}}
+\only<2>{\includegraphics[width=0.7\linewidth]{block-diagram-output.pdf}}
 \end{center}
 \end{frame}
 
@@ -462,14 +463,15 @@ mass           q1*q2 < 0 mt1         mt2                  # the only column; the
 \item<6-> \textcolor{darkblue}{Dask} looks like a good choice: it's in the C++/Python world, general enough to piece together what we need out of basic parts.
 
 \vspace{0.25 cm}
-(More about this in the concurrency session.)
+\textcolor{gray}{(More about this in the concurrency session.)}
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Current thinking\ldots}
 \vspace{0.5 cm}
 \begin{center}
-\includegraphics[width=0.7\linewidth]{block-diagram-processing.pdf}
+\only<1>{\includegraphics[width=0.7\linewidth]{block-diagram-output.pdf}}
+\only<2>{\includegraphics[width=0.7\linewidth]{block-diagram-processing.pdf}}
 \end{center}
 \end{frame}
 
@@ -496,13 +498,14 @@ mass           q1*q2 < 0 mt1         mt2                  # the only column; the
 \begin{frame}{Current thinking\ldots}
 \vspace{0.5 cm}
 \begin{center}
-\includegraphics[width=0.7\linewidth]{block-diagram-ceph.pdf}
+\only<1>{\includegraphics[width=0.7\linewidth]{block-diagram-processing.pdf}}
+\only<2>{\includegraphics[width=0.7\linewidth]{block-diagram-ceph.pdf}}
 \end{center}
 \end{frame}
 
 \begin{frame}{Conclusions}
 \vspace{0.35 cm}
-Though an analysis service should use as many off-the-shelf parts as possible, some are not suitable and some essential functionality is nonexistent.
+Though an analysis service should use as many open source parts as possible, some functionality is missing and we need to build our own.
 
 \vspace{0.25 cm}
 \underline{Software products developed along the way:}
@@ -511,12 +514,12 @@ Though an analysis service should use as many off-the-shelf parts as possible, s
 
 \vspace{0.25 cm}
 \begin{tabular}{c p{0.65\linewidth} c}
-\href{https://github.com/scikit-hep/uproot}{\textcolor{blue}{uproot}} & Quickly access ROOT branches as arrays. & mature \\
-\href{https://github.com/diana-hep/oamap}{\textcolor{blue}{oamap}} & Translate between object oriented Python and low-level array operations. & beta \\
-\href{https://github.com/diana-hep/pandhist}{\textcolor{blue}{pandhist}} & Methods for plotting tables of intervals and counts as histograms (Vega for plotting). & experimental \\
-\href{https://github.com/diana-hep/vegascope}{\textcolor{blue}{vegascope}} & Browser-based TCanvas for Vega, so that you don't have to use Jupyter if you don't want to. & done \\
+\href{https://github.com/scikit-hep/uproot}{\textcolor{blue}{uproot}} & Quickly access ROOT branches as arrays. & \textcolor{darkorange}{mature, in use} \\
+\href{https://github.com/diana-hep/oamap}{\textcolor{blue}{oamap}} & Translate between object-oriented Python and low-level array operations. & \textcolor{darkorange}{ready for testing} \\
+\href{https://github.com/diana-hep/pandhist}{\textcolor{blue}{pandhist}} & Reinterpretation of Pandas DataFrames as super-histograms. (Plotting in Vega-Lite.) & \textcolor{darkorange}{experimental} \\
+\href{https://github.com/diana-hep/vegascope}{\textcolor{blue}{vegascope}} & Browser-based TCanvas for Vega/Vega-Lite, so that you don't have to use Jupyter if you don't want to. & \textcolor{darkorange}{done (simple)} \\
 ? & OAMap as a collection in Dask. & \\
-? & Column and dataset manager (for sharing data). & \\
+? & Column manager (for sharing data among datasets). & \\
 ? & All-in-one environment for query-based analysis. & \\
 \end{tabular}
 \end{frame}
