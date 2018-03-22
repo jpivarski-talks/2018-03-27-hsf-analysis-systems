@@ -209,8 +209,82 @@ variable-length, nested data & \textcolor{red}{HEP analysis} & graph analysis \\
 \end{itemize}
 \end{frame}
 
-\begin{frame}{}
-FIXME: example of OAMap and performance plot
+\begin{frame}[fragile]{OAMap example}
+\small
+\begin{minted}{python}
+>>> import uproot
+>>> import oamap.source.root
+
+>>> url = "http://scikit-hep.org/uproot/examples/HZZ.root"
+>>> events = uproot.open(url)["events"].oamap()
+>>> events.schema.content["muons"].show()
+List(
+  starts = 'NMuon',    # schema maps object attributes to array names
+  stops = 'NMuon',
+  content = Record(    # at all levels of nesting
+    fields = {
+      'px': Primitive(dtype('float32'), data='Muon_Px'),
+      'py': Primitive(dtype('float32'), data='Muon_Py'),
+      'pz': Primitive(dtype('float32'), data='Muon_Pz'),
+      'energy': Primitive(dtype('float32'), data='Muon_E'),
+      'charge': Primitive(dtype('int32'), data='Muon_Charge'),
+      'isolation': Primitive(dtype('float32'), data='Muon_Iso')
+    }))
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{OAMap example}
+\vspace{0.5 cm}
+\small
+{\normalsize The dataset appears to be a nested Python list.}
+\begin{minted}{python}
+>>> events
+[<Event at index 0>, <Event at index 1>, <Event at index 2>, ...,
+ <Event at index 2418>, <Event at index 2419>, <Event at index 2420>]
+
+>>> events[0].muons
+[<Muon at index 0>, <Muon at index 1>]
+
+>>> [x.px for x in events[0].muons]
+[-52.899456, 37.73778]
+\end{minted}
+
+\vspace{0.5 cm}
+{\normalsize But it is generated on demand from arrays.}
+\begin{verbatim}
+"NMuon":   array([2, 1, 2, ..., 1, 1, 1], dtype=int32)
+"Muon_Px": array([-52.899456,  37.73778,  -0.81645936, ...,
+                  -29.756786, 1.1418698,  23.913206  ], dtype=float32)
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{OAMap example}
+\vspace{0.5 cm}
+\scriptsize
+{\normalsize The dataset can be included in compiled code with no change in syntax.}
+\begin{minted}{python}
+>>> import numpy
+>>> import numba
+>>> import oamap.compiler
+>>> @numba.njit                 # declares the following function to be compiled
+... def compute(events, out):
+...     i = 0
+...     for event in events:    # "event" and "event.muons" are a compiler fiction
+...         if len(event.muons) == 2:
+...             mu1, mu2 = event.muons[0], event.muons[1]
+...             px = mu1.px + mu2.px
+...             py = mu1.py + mu2.py
+...             pz = mu1.pz + mu2.pz
+...             energy = mu1.energy + mu2.energy
+...             out[i] = sqrt(energy**2 - px**2 - py**2 - pz**2)
+...             i += 1
+
+>>> out = numpy.empty(1371)
+>>> compute(events, out)        # compilation and array-fetching happen on first call
+>>> out
+array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
+       85.44384003, 75.96061707])
+\end{minted}
 \end{frame}
 
 \begin{frame}{Current thinking\ldots}
