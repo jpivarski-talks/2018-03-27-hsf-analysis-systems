@@ -86,15 +86,17 @@
 \begin{frame}{Basic block diagram}
 \vspace{0.25 cm}
 \begin{center}
-\only<1-2>{\includegraphics[width=0.7\linewidth]{basic-block-diagram.pdf}}
-\only<3>{\includegraphics[width=0.7\linewidth]{google-block-diagram.pdf}}
+\only<1-3>{\includegraphics[width=0.7\linewidth]{basic-block-diagram.pdf}}
+\only<4>{\includegraphics[width=0.7\linewidth]{google-block-diagram.pdf}}
 \end{center}
 
 \begin{uncoverenv}<2->
-The ``new sources'' can be arbitrarily large and efficiently share overlapping data with the original sources because they live in the same system.
+The \textcolor{darkblue}{``reduced output''} must be small enough to download quickly (e.g.\ histograms or highly skimmed tables). If not, the system ceases to be ``exploratory.''
+\end{uncoverenv}
 
 \vspace{0.25 cm}
-The ``reduced output'' must be small enough to download quickly (e.g.\ histograms or highly skimmed tables). If not, the system ceases to be ``exploratory.''
+\begin{uncoverenv}<3->
+The \textcolor{darkblue}{``new sources''} can be arbitrarily large and efficiently share overlapping data with the original sources because they live in the same system.
 \end{uncoverenv}
 \end{frame}
 
@@ -203,7 +205,10 @@ variable-length, nested data & \textcolor{red}{\underline{HEP analysis}} & graph
 \begin{itemize}\setlength{\itemsep}{0.2 cm}
 \item[$\surd$]<2-> Translates object-oriented (Python) code into nothing but array operations.
 \item[$\surd$]<3-> Extends Numba (Python compiler) to generate native machine bytecode (fast).
-\item[$\surd$]<4-> Arrays can come from anywhere: ROOT (through uproot), raw data files, remote network calls, HDF5, etc. {\it The same object} can have attributes served from any of the above, so an official dataset can be served from ROOT files while a user's modification (cuts or partial calculations applied) can be these ROOT files augmented by raw arrays.
+\item[$\surd$]<4-> Arrays can come from anywhere: ROOT (through uproot), raw data files, remote network calls, HDF5, etc.
+
+\vspace{0.2 cm}
+{\it The same object} can have attributes served from all of the above, so an official dataset can be served from ROOT files while a user's modification (cuts or partial calculations applied) can be these ROOT files augmented by raw arrays.
 
 \item[$\surd$]<5-> Array fetching is through an arbitrary dict-like object: may defer to disk, network, or per-column cache.
 
@@ -304,15 +309,17 @@ array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
 \vspace{0.25 cm}
 \uncover<2->{\textcolor{darkblue}{Here's an idea:} query server returns Pandas DataFrames.}
 
-\vspace{0.5 cm}
-\begin{itemize}\setlength{\itemsep}{0.25 cm}
-\item<3-> Until recently, I've wrongly thought that a Pandas DataFrame is like a TTree with egregious limitations:
-\begin{itemize}
+\vspace{0.15 cm}
+\begin{itemize}\setlength{\itemsep}{0.35 cm}
+\item<3-> Until recently, I've had the wrong idea about what a Pandas DataFrame is: \\ I thought it was a TTree (set of events) with egregious limitations:
+\vspace{0.1 cm}
+\begin{itemize}\setlength{\itemsep}{0.1 cm}
 \item Tabular, with little support for variable-length, nested data.
 \item Strictly in-memory. \textcolor{gray}{(Dask DataFrames implement the interface \mbox{without this restriction.)\hspace{-1 cm}}}
 \end{itemize}
 \item<4-> I had been missing an important fact: most of Pandas's functionality is in its handling of {\it indexes}.
-\begin{itemize}
+\vspace{0.1 cm}
+\begin{itemize}\setlength{\itemsep}{0.1 cm}
 \item TTrees/events are indexed only by entry or run/event number.
 \item Pandas indexes may be non-contiguous, non-numeric, intervals/durations, multi-component, \ldots, and every operation maintains consistent indexes.
 \end{itemize}
@@ -329,8 +336,8 @@ array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
 \small
 
 \begin{minted}{python}
-# define bins in many dimensions; we'll think about how to plot later
 import pandhist
+# define bins in many dimensions; we'll think about how to plot later
 muonhist = (pandhist
             .bin(100, 0, 500, "mass")
             .cut("q1*q2 < 0")
