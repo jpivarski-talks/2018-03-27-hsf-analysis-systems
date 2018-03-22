@@ -118,9 +118,9 @@ However, {\it for every one of these,} you quickly encounter ``not implemented y
 \end{itemize}
 \end{frame}
 
-\begin{frame}{HEP is both simpler and more complex than SQL}
+\begin{frame}{HEP is both simpler and more complex than relational analytics}
 \vspace{0.35 cm}
-\mbox{ } \hfill \textcolor{red}{\LARGE HEP data/functions are simpler} \hfill \mbox{ }
+\mbox{ } \hfill \textcolor{red}{\LARGE HEP analysis is simpler} \hfill \mbox{ }
 
 \vspace{0.25 cm}
 \begin{columns}
@@ -141,9 +141,9 @@ HEP functions never have to cross events.
 \end{columns}
 \end{frame}
 
-\begin{frame}{HEP is both simpler and more complex than SQL}
+\begin{frame}{HEP is both simpler and more complex than relational analytics}
 \vspace{0.35 cm}
-\mbox{ } \hfill \textcolor{red}{\LARGE HEP data/functions are more complex} \hfill \mbox{ }
+\mbox{ } \hfill \textcolor{red}{\LARGE HEP analysis is more complex} \hfill \mbox{ }
 
 \vspace{-0.25 cm}
 \begin{columns}[t]
@@ -164,18 +164,18 @@ In many fields, data are not considered ready for analysis until they're in a ta
 \end{columns}
 \end{frame}
 
-\begin{frame}{HEP is both simpler and more complex than SQL}
+\begin{frame}{HEP is both simpler and more complex than relational analytics}
 \Large
 \renewcommand{\arraystretch}{2}
-\mbox{\hspace{-0.35 cm}\begin{tabular}{c | c c}
-                             & independent events & all-to-all shuffle \\\hline
-tabular data                 & basic spreadsheet  & classic map-reduce \\
-variable-length, nested data & \textcolor{red}{\underline{HEP analysis}} & graph analysis \\
+\mbox{\hspace{-0.5 cm}\begin{tabular}{c | c c}
+                             & independent events  & all-to-all shuffle \\\hline
+tabular data                 & basic spreadsheets  & relational analytics \\
+variable-length, nested data & \textcolor{red}{\underline{HEP analysis}} & graph analytics \\
 \end{tabular}}
 \end{frame}
 
 \begin{frame}{What should our data source be?}
-\vspace{0.5 cm}
+\vspace{0.35 cm}
 \textcolor{darkblue}{Identically typed, variable-length, nested data can be split into columns:}
 \begin{itemize}
 \item All attribute values at a given level of hierarchy are stored together and may be retrieved independently of the rest.
@@ -185,25 +185,29 @@ variable-length, nested data & \textcolor{red}{\underline{HEP analysis}} & graph
 
 \begin{uncoverenv}<2->
 \vspace{0.25 cm}
-\textcolor{darkblue}{But beyond ROOT:}
+\textcolor{darkblue}{But we could take this further, the way fast databases have:}
 \begin{itemize}
-\item<2-> Want to adopt an optimization common in SQL: ``no row materialization.'' \\ User code written in terms of objects, but runtime is strictly array access (fast).
-\item<3-> Want flexibility to define datasets with 99\% overlap: e.g.\ user defines new jet energy corrections for later use. New dataset is one new column + all old columns.
-\item<4-> Want to allow for database-style indexing, so that a cut on an indexed variable (most likely $p_T$) avoids touching disk for events that would fail the cut.
+\item<2-> {\bf Minimize runtime:} data analysis functions have low arithmetic intensity; don't spend time creating objects that will be used only once!
+\item<3-> {\bf Minimize storage:} new versions of a dataset can share (as in ``symlink'') most attributes with the old version.
+\item<4-> {\bf Share cache:} {\it column} popularity distribution is steeper than the {\it file} popularity distribution; most popular columns could remain in memory for all users.
+\item<5-> {\bf Avoid touching disk:} sorted partitions do not need to be fully read if a cut is being applied to the sorted variable (most likely $p_T$).
 \end{itemize}
 \end{uncoverenv}
 \end{frame}
 
-\begin{frame}{Working implementation: OAMap}
-\vspace{0.5 cm}
-\underline{Object Array Map} (\href{https://github.com/diana-hep/oamap}{\textcolor{blue}{\tt https://github.com/diana-hep/oamap}})
+\begin{frame}{Object Array Map: columnar, hierarchical data as runtime objects}
+\vspace{0.35 cm}
+\underline{OAMap} (\href{https://github.com/diana-hep/oamap}{\textcolor{blue}{\tt https://github.com/diana-hep/oamap}})
 
 \vspace{0.25 cm}
-\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\begin{itemize}\setlength{\itemsep}{0.2 cm}
 \item[$\surd$]<2-> Translates object oriented (Python) code into nothing but array operations.
 \item[$\surd$]<3-> Extends Numba (Python compiler) to generate native machine bytecode (fast).
-\item[$\surd$]<4-> Unrestricted source of arrays; may be ROOT, raw data files, remote network calls, HDF5, etc., or {\it all of the above in the same object.}
-\item[$\surd$]<5-> Enough indirection for different particle types to be independently sorted by their own $p_T$s, and thus a filter like ``muon $p_T > X$ and jet $p_T > Y$'' might touch disk for only half the muon data and half the jet data (PoC).
+\item[$\surd$]<4-> Arrays can come from anywhere: ROOT (through uproot), raw data files, remote network calls, HDF5, etc. {\it The same object} can have attributes served from any of the above, so an official dataset can be served from ROOT files while a user's modification (cuts or partial calculations applied) can be these ROOT files augmented by raw arrays.
+
+\item[$\surd$]<5-> Array fetching is through an arbitrary dict-like object: may defer to disk, network, or per-column cache.
+
+\item[$\surd$]<6-> OAMap has enough indirection that different particle types can be {\it independently sorted} by their own $p_T$s. Thus, a filter like ``muon $p_T > X$ and jet $p_T > Y$'' may touch disk for only half the muon data and half the jet data.
 \end{itemize}
 \end{frame}
 
